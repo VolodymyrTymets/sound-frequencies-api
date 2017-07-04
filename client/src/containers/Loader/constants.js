@@ -1,0 +1,1 @@
+export const SWITCH_LOADER = 'SWITCH_LOADER';

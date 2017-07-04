@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import createHistory from 'history/createBrowserHistory';
+import configureStore from './store/configureStore';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+const store = configureStore();
+
+
+ReactDOM.render(
+  <App store={store} history={createHistory()}/>,
+  document.getElementById('root')
+);
