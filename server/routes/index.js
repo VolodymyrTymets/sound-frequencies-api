@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express();
+const mic = require('../controllers/mic');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+
+// api routes v1 (/api/v1)
+router.use('/mic', mic());
+
 
 module.exports = router;

@@ -1,4 +1,3 @@
 export default {
-  TEST: '',
-
+  RECORDED: '/api/v1/mic/recorded',
 };
