@@ -13,7 +13,7 @@ const getPhasors = audioData => {
 };
 
 const getFrequencies = (audioData, rate) =>
-  fftUtil.fftFreq(getPhasors(audioData), rate || audioData.sampleRate);
+  fftUtil.fftMag(getPhasors(audioData), rate || audioData.sampleRate);
 
 
 module.exports = { getFrequencies };

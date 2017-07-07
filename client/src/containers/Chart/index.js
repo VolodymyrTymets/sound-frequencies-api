@@ -1,54 +1,55 @@
 import { compose, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
 import { getRecorded } from '../Mic/actions';
-import { TEST_1 } from '../Tracks/constants';
+import { TEST_1, TEST_2 } from '../Tracks/constants';
 
 import Chart from '../../components/Chart';
+const zingchart = require('zingchart');
+
+var getConfig = datas => ({
+  "type": "line",
+  tooltip:{
+    visible: false
+  },
+  scaleX:{
+    minValue: 1417392000000, //dec 1, 2014 00:00:00
+    step: 3600000,
+    zooming: true,
+    _zoomTo: [0,168],
+    lineColor:'#2196f3',
+  },
+  "series": [
+    {
+      "values": datas[0]
+    },
+    {
+      "values": datas[1]
+    },
+  ]
+});
 
 const enhance = compose (
-  connect(state => {
-    const data = state.tracks[TEST_1] || [];
-    const newData =[];
-    const index = parseInt(20002 / 100);
-    const labels = []
-    for(let i = 0; i< 100; i++) {
-      newData.push(data[i * index ]);
-      labels.push(i)
-    }
-    console.log('newData->', newData)
-    console.log('length', data.length)
-    return {
-      data:{
-        datasets: [
-          {
-            data: newData,
-            fillColor: "rgba(220,220,220,0.2)",
-            label: "My First dataset",
-            pointColor: "rgba(220,220,220,1)",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            strokeColor: "rgba(220,220,220,1)",
-          }
-        ],
-        labels:labels
-      },
-    }
-  }, { getRecorded }),
-  // lifecycle({
-  //   componentDidMount() {
-  //
-  //   },
-  //   componentWillReceiveProps(newProps) {
-  //     const { investors, setInvestor, investor } = newProps;
-  //     if (!investor) {
-  //       const investorUID = this.props.match.params.investorUID;
-  //       const investorId = _.findKey(investors.values, {'uid': investorUID});
-  //       const investor = investors.values[investorId];
-  //       investor && setInvestor(investor);
-  //     }
-  //   },
-  // })
+  connect(state => ({
+    data1: state.tracks[TEST_1] || [],
+    data2: state.tracks[TEST_2] || [],
+  }), { getRecorded }),
+  lifecycle({
+    componentDidMount() {
+
+    },
+    componentWillReceiveProps(newProps) {
+      const { data1,  data2 } = newProps;
+      if (data1.length !== this.props.data1.length || data2.length !== this.props.data2.length ) {
+        console.log('reload')
+        zingchart.render({
+          id : 'chart',
+          data : getConfig([data1, data2]),
+          height: 600,
+          width: "100%"
+        });
+      }
+    },
+  })
 );
 
 export default enhance(Chart);

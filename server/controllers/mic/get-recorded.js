@@ -10,7 +10,7 @@ const getRecorded = () => async (req, res, next) => {
   try {
 
     const audioData = await decoder(`${name}.wav`);
-    const frequencies = getFrequencies(audioData, 44100);
+    const frequencies = getFrequencies(audioData);
     res.status(200).json({ frequencies }).end();
 
   } catch (error) {
