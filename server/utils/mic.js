@@ -1,7 +1,6 @@
 const mic = require('mic');
 const fs = require('fs');
 const path = require('path');
-const logError = require('./log-error');
 
 const MIC_SETTINGS = {
   rate: 44100,
@@ -14,7 +13,7 @@ const MIC_SETTINGS = {
 
 const getMicInputStream = (fileName, micSettings) => {
 
-  const filePath = path.resolve(__dirname, '../', 'assets', fileName);
+  const filePath = path.resolve(__dirname, '../', 'private', fileName);
 
   const micInstance = mic(micSettings || MIC_SETTINGS);
 
@@ -24,7 +23,6 @@ const getMicInputStream = (fileName, micSettings) => {
 
   micInputStream.pipe(outputFileStream);
 
-  micInputStream.on('error', logError);
   return { micInputStream, micInstance };
 };
 
