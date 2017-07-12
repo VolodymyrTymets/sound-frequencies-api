@@ -2,18 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { RECORDED } from '../../containers/Mic/constants';
 
-const Panel = ({ onButtonClick, onButton2Click, onRecord, mic }) =>
+const Panel = ({ onSubmit, onRecord, mic }) =>
   <div className="row">
     <div className="col-lg-12">
-      <button className="btn btn-primary" onClick={onButtonClick}> Get test</button>
-      {/*<button className="btn btn-primary" onClick={onButton2Click}> Get test2</button>*/}
-      <button className="btn btn-primary" onClick={onRecord}> {mic.status !==  RECORDED ? 'Record' : 'Stop'}</button>
+      <form onSubmit={onSubmit}>
+        <div className="form-group">
+          <label>Track name</label>
+          <input type="text" className="form-control" name="name" placeholder="name"/>
+        </div>
+
+        <button className="btn btn-primary" type="submit">Get</button>
+        <button className="btn btn-primary"  type="button" onClick={onRecord}> {mic.status !==  RECORDED ? 'Record' : 'Stop'}</button>
+      </form>
     </div>
   </div>;
 
 Panel.propTypes = {
-  onButtonClick: PropTypes.func.isRequired,
-  onButton2Click: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   onRecord: PropTypes.func.isRequired,
   mic: PropTypes.object.isRequired,
 };

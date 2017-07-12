@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import { compose, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
 import { getRecorded } from '../Mic/actions';
-import { TEST_1, TEST_2, RECORDED } from '../Tracks/constants';
+import { RECORDED } from '../Tracks/constants';
 
 import Chart from '../../components/Chart';
 const zingchart = require('zingchart');
@@ -25,13 +26,17 @@ var getConfig = datas => ({
     {
       "values": datas[1]
     },
+    {
+      "values": datas[3]
+    },
   ]
 });
 
 const enhance = compose (
   connect(state => ({
-    data1: state.tracks[TEST_1] || [],
-    data2: state.tracks[RECORDED] || [],
+    data1: state.tracks[_.keys(state.tracks)[0]] || [],
+    data2: state.tracks[_.keys(state.tracks)[1]] || [],
+    data3: state.tracks[RECORDED] || [],
   }), { getRecorded }),
   lifecycle({
     componentDidMount() {
