@@ -11,7 +11,7 @@ const mic = getMic(FILE_NAME, {
   channels: 2,
   debug: true,
   exitOnSilence: 6,
-  device: 'plughw:1',
+  device: process.env.NODE_ENV === 'production' ? 'plughw:0' : 'plughw:1',
   fileType: 'wav',
 });
 

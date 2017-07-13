@@ -18,7 +18,8 @@
     "recompose": "^0.23.5",
     "redux": "^3.7.1",
     "redux-promise": "^0.5.3",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "zingchart": "^2.6.1"
   },
   "devDependencies": {
     "react-scripts": "1.0.10"

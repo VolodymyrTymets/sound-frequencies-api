@@ -45,7 +45,6 @@ const enhance = compose (
     componentWillReceiveProps(newProps) {
       const { data1,  data2 } = newProps;
       if (data1.length !== this.props.data1.length || data2.length !== this.props.data2.length ) {
-        console.log('reload');
         zingchart.render({
           id : 'chart',
           data : getConfig([data1, data2]),

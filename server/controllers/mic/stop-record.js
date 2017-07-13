@@ -6,7 +6,6 @@ const decodeFile = async (fileName, res, next) => {
   try {
     const audioData = await decoder(fileName);
     const frequencies = getFrequencies(audioData);
-    //console.log('--->> send response ')
     res.status(200).json({ frequencies }).end();
 
   } catch (error) {

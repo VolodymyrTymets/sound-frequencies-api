@@ -6,7 +6,6 @@ const getRecorded = () => async (req, res, next) => {
 
   const { name } = req.query;
 
-  console.log('name ->', name);
   try {
     const audioData = await decoder(`${name}.wav`);
     const frequencies = getFrequencies(audioData);

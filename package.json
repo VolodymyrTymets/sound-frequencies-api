@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "./node_modules/.bin/gulp run:dev",
+    "start": "NODE_ENV=production NODE_PATH=server node ./server/bin/www",
     "lint": "eslint ./server ./client"
   },
   "engines": {
