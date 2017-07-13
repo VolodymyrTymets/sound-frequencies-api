@@ -2,8 +2,9 @@ import _ from 'lodash';
 import { compose, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
 import { getRecorded } from '../Mic/actions';
+import { updateTrack } from '../Tracks/actions';
 import { RECORDED } from '../Tracks/constants';
-
+import socket from '../../socket'
 import Chart from '../../components/Chart';
 const zingchart = require('zingchart');
 
@@ -37,19 +38,39 @@ const enhance = compose (
     data1: state.tracks[_.keys(state.tracks)[0]] || [],
     data2: state.tracks[_.keys(state.tracks)[1]] || [],
     data3: state.tracks[RECORDED] || [],
-  }), { getRecorded }),
+  }), { getRecorded, updateTrack }),
   lifecycle({
     componentDidMount() {
+      const { data1,  data2 } = this.props;
+      socket.on('record-data', data => {
+        console.log('data ->', data)
+        //this.props.updateTrack(RECORDED, data);
+        zingchart.exec('chart', 'appendseriesvalues', {
+          plotindex : 0,
+          values : data || []
+        });
+      });
 
+      zingchart.render({
+        id : 'chart',
+        data : getConfig([data1, data2]),
+        height: 600,
+        width: "100%"
+      });
+
+      // setTimeout(() => {
+      //   zingchart.exec('chart', 'appendseriesvalues', {
+      //     plotindex : 0,
+      //     values : [0, 1]
+      //   });
+      // }, 2000)
     },
     componentWillReceiveProps(newProps) {
       const { data1,  data2 } = newProps;
       if (data1.length !== this.props.data1.length || data2.length !== this.props.data2.length ) {
-        zingchart.render({
-          id : 'chart',
-          data : getConfig([data1, data2]),
-          height: 600,
-          width: "100%"
+        zingchart.exec('chart', 'appendseriesvalues', {
+          plotindex : 1,
+          values : data1
         });
       }
     },

@@ -19,9 +19,10 @@ const stopRecord = (mic, fileName) => (req, res, next) => {
   mic.micInputStream.on('error',  err => next(err));
 
   mic.micInstance.stop();
-  setTimeout(() => {
-      decodeFile(fileName, res);
-  }, 500);
+  res.status(200).json({ success: true }).end();
+  // setTimeout(() => {
+  //     decodeFile(fileName, res);
+  // }, 500);
 };
 
 module.exports = stopRecord;

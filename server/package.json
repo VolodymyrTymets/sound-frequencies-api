@@ -15,6 +15,7 @@
     "mic": "^2.1.1",
     "morgan": "~1.8.1",
     "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.3",
     "wav-decoder": "^1.1.1"
   }
 }

@@ -9,7 +9,7 @@ const FILE_NAME = 'output.wav';
 const mic = getMic(FILE_NAME, {
   rate: 44100,
   channels: 2,
-  debug: true,
+  debug: false,
   exitOnSilence: 6,
   device: process.env.NODE_ENV === 'production' ? 'plughw:0' : 'plughw:1',
   fileType: 'wav',
