@@ -13,7 +13,7 @@ const micSettings = {
   bitwidth: 16,
   debug: true,
   exitOnSilence: 6,
-  device: process.env.NODE_ENV === 'production' ? 'plughw:0' : 'plughw:1',
+  device: process.env.NODE_ENV === 'production' ? 'plughw:1' : 'plughw:0',
   fileType: 'wav',
 };
 
