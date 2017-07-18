@@ -29,12 +29,12 @@ const startRecorded = () =>  async dispatch => {
 const stopRecorded = (name) =>  async dispatch => {
   const response = await  get(APIAddresses.STOP_RECORD, dispatch, GET_RECORDED);
 
-  const frequencies = _.get(response, 'data.frequencies');
-  if (frequencies) {
+  const success = _.get(response, 'data.success');
+  if (success) {
     dispatch({
       type: STOP_RECORD,
     });
-    dispatch(initTrack(RECORDED, frequencies));
+    //dispatch(initTrack(RECORDED, frequencies));
   }
 };
 

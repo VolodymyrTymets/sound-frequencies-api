@@ -14,11 +14,11 @@ const decodeFile = async (fileName, res, next) => {
   }
 };
 
-const stopRecord = (mic, fileName) => (req, res, next) => {
+const stopRecord = (fileName) => (req, res, next) => {
 
-  mic.micInputStream.on('error',  err => next(err));
+  //mic.micInputStream.on('error',  err => next(err));
 
-  mic.micInstance.stop();
+  global.mic.micInstance.stop();
   res.status(200).json({ success: true }).end();
   // setTimeout(() => {
   //     decodeFile(fileName, res);

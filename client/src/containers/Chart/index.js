@@ -14,7 +14,8 @@ var getConfig = datas => ({
     visible: false
   },
   scaleX:{
-    minValue: 1, //dec 1, 2014 00:00:00
+
+    minValue: 1000, //dec 1, 2014 00:00:00
     step: 1,
     zooming: true,
     _zoomTo: [0,20],
@@ -43,11 +44,9 @@ const enhance = compose (
     componentDidMount() {
       const { data1,  data2 } = this.props;
       socket.on('record-data', data => {
-        console.log('data ->', data)
-        //this.props.updateTrack(RECORDED, data);
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 0,
-          values : data || []
+          values : data || [],
         });
       });
 
