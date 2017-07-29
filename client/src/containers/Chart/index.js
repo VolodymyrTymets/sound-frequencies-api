@@ -44,9 +44,12 @@ const enhance = compose (
     componentDidMount() {
       const { data1,  data2 } = this.props;
       socket.on('record-data', data => {
+        console.log(data)
+        const values = data.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
+        console.log('values ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 0,
-          values : data || [],
+          values,
         });
       });
 
@@ -66,17 +69,17 @@ const enhance = compose (
     },
     componentWillReceiveProps(newProps) {
       const { data1,  data2 } = newProps;
-      console.log(data1)
+      console.log('data1 ->', data1[0])
       if (data1.length !== this.props.data1.length) {
-        const values = data1.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im).filter(value => value > 1);
-        console.log(values)
+        const values = data1.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
+        console.log('values ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 1,
           values,
         });
       }
       if (data2.length !== this.props.data2.length ) {
-        const values = data2.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im).filter(value => value > 1);
+      const values = data2.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
         console.log('2 ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 0,

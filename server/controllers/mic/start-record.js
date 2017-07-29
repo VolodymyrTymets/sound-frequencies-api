@@ -1,7 +1,8 @@
 const decoder = require('../../utils/wav-decoder');
-const { getFrequencies } = require('../../utils/math');
+//const { getFrequencies } = require('../../utils/math');
 const decode = require('../../utils/wav-stream-decoder');
 const getMic = require('../../utils/mic');
+const aydioFft = require('../../utils/fft');
 
 const FILE_NAME = 'output.wav';
 
@@ -11,7 +12,7 @@ const micSettings = {
   bitwidth: 16,
   debug: true,
   exitOnSilence: 6,
-  device: process.env.NODE_ENV === 'production' ? 'plughw:1' : 'plughw:0',
+  device: process.env.NODE_ENV === 'production' ? 'plughw:0' : 'plughw:1',
   fileType: 'wav',
 };
 
@@ -29,7 +30,8 @@ const decodeBuffer = format => async buffer => {
   console.log('_________decodeBuffer________')
   try {
     const audioData = await decode(buffer, format);
-    const frequencies = getFrequencies(audioData);
+    //console.log('audioData ->', audioData)
+    const frequencies = aydioFft(audioData, 1024);
     const cutted = frequencies.filter((value, index) => index % 5 === 0);
     global.io.emit('record-data', cutted);
 
