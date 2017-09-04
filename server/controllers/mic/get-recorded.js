@@ -9,6 +9,7 @@ const getRecorded = () => async (req, res, next) => {
 
   try {
     const audioData = await decoder(`${name}.wav`);
+    console.log(audioData)
     const frequencies = aydioFft(audioData, 256);
     res.status(200).json({ frequencies }).end();
 

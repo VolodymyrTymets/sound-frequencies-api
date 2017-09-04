@@ -15,7 +15,7 @@ var getConfig = datas => ({
   },
   scaleX:{
 
-    minValue: 1000, //dec 1, 2014 00:00:00
+    minValue: 1, //dec 1, 2014 00:00:00
     step: 1,
     zooming: true,
     _zoomTo: [0,20],
@@ -44,7 +44,7 @@ const enhance = compose (
     componentDidMount() {
       const { data1,  data2 } = this.props;
       socket.on('record-data', data => {
-        console.log(data)
+        console.log('data ->', data)
         const values = data.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
         console.log('values ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
@@ -69,9 +69,12 @@ const enhance = compose (
     },
     componentWillReceiveProps(newProps) {
       const { data1,  data2 } = newProps;
-      console.log('data1 ->', data1[0])
+      console.log('data1 ->', data1)
       if (data1.length !== this.props.data1.length) {
-        const values = data1.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
+        const values = data1.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im)//.filter(value => value > 1);
+
+        // const values = data1.map(value => [_.isNumber(value.phase) ? value.phase : value.phase.real ,_.isNumber(value.magnitude) ? value.magnitude : value.magnitude.real])
+        // .filter(f => f[0] > 1);
         console.log('values ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 1,
@@ -79,7 +82,7 @@ const enhance = compose (
         });
       }
       if (data2.length !== this.props.data2.length ) {
-      const values = data2.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
+      const values = data2.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im)//.filter(value => value > 1);
         console.log('2 ->', values)
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 0,
