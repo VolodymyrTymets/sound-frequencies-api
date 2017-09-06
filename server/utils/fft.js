@@ -1,7 +1,11 @@
 const fft = require("ndarray-fft");
 const ndarray = require('ndarray');
 const math = require('mathjs');
+var ft = require('fourier-transform')
 
+function nearestPow2( aSize ){
+  return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
+}
 const aydioFft = (audioData, l = 256) => {
   const lowRange = audioData.channelData[0];
   const upRange = audioData.channelData[1];
@@ -19,17 +23,34 @@ const aydioFft = (audioData, l = 256) => {
   //   });
   // }
 
+
+  var frequency = 440;
+var size = 1024;
+var sampleRate = 44100;
+var waveform = new Float32Array(size);
+for (var i = 0; i < size; i++) {
+    waveform[i] = Math.sin(frequency * Math.PI * 2 * (i / sampleRate));
+}
+console.log('lowRange ->',lowRange.length)
+const index = nearestPow2(lowRange.length)
+console.log('index ->',index)
+const waveform1 = lowRange.slice(0, 32768);
+console.log('waveform1 ->',waveform1.length)
+var spectrum = ft(waveform1);
+//console.log('spectrum ->', spectrum);
+
+
     const x = ndarray(lowRange);
     const y = ndarray(upRange);
 
-    fft(1, x, y);
-    x.data.slice(0, x.data.length / 2).forEach((value, index) => {
-        frequencies.push({
-        magnitude: /*value,*/math.sqrt(value*value + y.data[index]),
-        phase: /*y.data[index]*/math.atan2(y.data[index], value)
-      });
-    });
-  return frequencies;
+    // fft(1, x, y);
+    // x.data.slice(0, x.data.length / 2).forEach((value, index) => {
+    //     frequencies.push({
+    //     magnitude: spectrum,///*value,*/math.sqrt(value*value + y.data[index]),
+    //     phase: /*y.data[index]*/math.atan2(y.data[index], value)
+    //   });
+    // });
+  return spectrum;
 }
 
 module.exports = aydioFft;
