@@ -14,9 +14,9 @@ var getConfig = datas => ({
     visible: false
   },
   scaleX:{
-
-    minValue: 1, //dec 1, 2014 00:00:00
-    step: 1,
+    //minValue: 1, //dec 1, 2014 00:00:00
+    //step: 1,
+  //  format:"%v Hz",
     zooming: true,
     _zoomTo: [0,20],
     lineColor:'#2196f3',
@@ -36,26 +36,38 @@ var getConfig = datas => ({
 
 const enhance = compose (
   connect(state => ({
-    data1: state.tracks[_.keys(state.tracks)[0]] || [],
-    data2: state.tracks[_.keys(state.tracks)[1]] || [],
-    data3: state.tracks[RECORDED] || [],
+    frequencie1: state.frequencies[_.keys(state.frequencies)[0]] || [],
+    frequencie2: state.frequencies[_.keys(state.frequencies)[1]] || [],
+    //frequencie: state.frequencies[RECORDED] || [],
+    wave1: state.waves[_.keys(state.waves)[0]] || [],
+    wave2: state.waves[_.keys(state.waves)[1]] || [],
+    nerveEnergy: state.energys['nerve'],
+    muscleEnergy: state.energys['muscle'],
   }), { getRecorded, updateTrack }),
   lifecycle({
     componentDidMount() {
-      const { data1,  data2 } = this.props;
-      socket.on('record-data', data => {
-        console.log('data ->', data)
-        const values = data.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
-        console.log('values ->', values)
-        zingchart.exec('chart', 'appendseriesvalues', {
-          plotindex : 0,
-          values,
-        });
+       const { frequencie1,  frequencie2, wave1, wave2 } = this.props;
+      //
+      // socket.on('record-data', data => {
+      //   console.log('data ->', data)
+      //   const values = data.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude).filter(value => value > 1);
+      //   console.log('values ->', values)
+      //   zingchart.exec('chart', 'appendseriesvalues', {
+      //     plotindex : 0,
+      //     values,
+      //   });
+      // });
+
+      zingchart.render({
+        id : 'chart2',
+        data : getConfig([frequencie1, frequencie1]),
+        height: 600,
+        width: "100%"
       });
 
       zingchart.render({
-        id : 'chart',
-        data : getConfig([data1, data2]),
+        id : 'chart1',
+        data : getConfig([wave1, wave1]),
         height: 600,
         width: "100%"
       });
@@ -68,27 +80,39 @@ const enhance = compose (
       // }, 2000)
     },
     componentWillReceiveProps(newProps) {
-      const { data1,  data2 } = newProps;
-      console.log('data1 ->', data1)
-      if (data1.length !== this.props.data1.length) {
-        //const values = data1.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im)//.filter(value => value > 1);
-        const values = data1;
-        // const values = data1.map(value => [_.isNumber(value.phase) ? value.phase : value.phase.real ,_.isNumber(value.magnitude) ? value.magnitude : value.magnitude.real])
-        // .filter(f => f[0] > 1);
-        console.log('values ->', values)
-        zingchart.exec('chart', 'appendseriesvalues', {
+      const { frequencie1, wave1, frequencie2, wave2 } = newProps;
+      if (frequencie1.length !== this.props.frequencie1.length) {
+        console.log('frequencie ->', frequencie1);
+        const values = frequencie1.map(fr => ([fr.frequency, fr.amplitude]));
+        console.log('values ->', values);
+        zingchart.exec('chart2', 'appendseriesvalues', {
           plotindex : 1,
           values,
         });
       }
-      if (data2.length !== this.props.data2.length ) {
-      //const values = data2.map(value => _.isNumber(value.magnitude) ? value.magnitude : value.magnitude.im)//.filter(value => value > 1);
 
-        const values = data2;
-        console.log('2 ->', values)
-        zingchart.exec('chart', 'appendseriesvalues', {
+      if (wave1.length !== this.props.wave1.length) {
+        console.log('wave ->', wave1)
+        zingchart.exec('chart1', 'appendseriesvalues', {
+          plotindex : 1,
+          values: wave1,
+        });
+      }
+      if (frequencie2.length !== this.props.frequencie2.length) {
+        console.log('frequencie ->', frequencie2);
+        const values = frequencie2.map(fr => ([fr.frequency, fr.amplitude]));
+        console.log('values ->', values);
+        zingchart.exec('chart2', 'appendseriesvalues', {
           plotindex : 0,
           values,
+        });
+      }
+
+      if (wave2.length !== this.props.wave2.length) {
+        console.log('wave ->', wave2)
+        zingchart.exec('chart1', 'appendseriesvalues', {
+          plotindex : 0,
+          values: wave2,
         });
       }
     },

@@ -1,56 +1,83 @@
+const _ = require('lodash');
 const fft = require("ndarray-fft");
 const ndarray = require('ndarray');
 const math = require('mathjs');
 var ft = require('fourier-transform')
 
+const fjs = require("frequencyjs");
+
 function nearestPow2( aSize ){
   return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
 }
-const aydioFft = (audioData, l = 256) => {
+const getWave = () => {
+  const frequency = 440;
+  const size = 1024;
+  const sampleRate = 44100;
+  const waveform = new Float32Array(size);
+  for (var i = 0; i < size; i++) {
+      waveform[i] = Math.sin(frequency * Math.PI * 2 * (i / sampleRate));
+  }
+  return waveform;
+}
+
+const getIndexOfMax = spectrum => {
+    let max = spectrum[0].amplitude;
+    let maxIndex = 0;
+
+    for (var i = 1; i < spectrum.length; i++) {
+        if (spectrum[i].amplitude > max) {
+            maxIndex = i;
+            max = spectrum[i].amplitude;
+        }
+    }
+    return maxIndex;
+}
+
+const getEnergy = (spectrum, l) => {
+  const indexOfMax = getIndexOfMax(spectrum);
+  console.log('indexOfMax ->', indexOfMax);
+  console.log('spectrum ->', spectrum[indexOfMax].amplitude);
+  // build arra to calculate energy +-l from max amplitude
+  const toCalculation = [];
+  let leftIndex = indexOfMax;
+  do {
+    toCalculation.push(spectrum[leftIndex]);
+    leftIndex--;
+  } while (spectrum[leftIndex] && (spectrum[leftIndex].frequency > spectrum[indexOfMax].frequency - l));
+  toCalculation.reverse();
+
+  let rightIndex = indexOfMax + 1;
+  do {
+    toCalculation.push(spectrum[rightIndex]);
+    rightIndex++;
+  } while (spectrum[rightIndex].frequency < spectrum[indexOfMax].frequency + l)
+
+
+  // calculate squere
+  const squeres = [];
+  for(let index = 0; index < toCalculation.length - 1; index ++) {
+    const a = toCalculation[index].amplitude;
+    const b = toCalculation[index + 1].frequency - toCalculation[index].frequency;
+    squeres.push(a * b);
+  }
+
+  return _.sum(squeres);
+}
+
+const aydioFft = (audioData) => {
   const lowRange = audioData.channelData[0];
   const upRange = audioData.channelData[1];
-  const frequencies = [];
-  // for (let i =0; i < lowRange.length; i= i + l) {
-  //   const x = ndarray(lowRange.slice(i, i + l));
-  //   const y = ndarray(upRange.slice(i, i + l));
-  //
-  //   fft(1, x, y);
-  //   x.data.slice(0, x.data.length / 2).forEach((value, index) => {
-  //       frequencies.push({
-  //       magnitude: math.sqrt(value*value + y.data[index]),
-  //       phase: math.atan2(y.data[index], value)
-  //     });
-  //   });
-  // }
+  let waveLength = lowRange.length;
+  let index = nearestPow2(waveLength);
 
+  while (!(index <= lowRange.length)) {
+    waveLength = waveLength - 2;
+    index = nearestPow2(waveLength)
+  }
 
-  var frequency = 440;
-var size = 1024;
-var sampleRate = 44100;
-var waveform = new Float32Array(size);
-for (var i = 0; i < size; i++) {
-    waveform[i] = Math.sin(frequency * Math.PI * 2 * (i / sampleRate));
-}
-console.log('lowRange ->',lowRange.length)
-const index = nearestPow2(lowRange.length)
-console.log('index ->',index)
-const waveform1 = lowRange.slice(0, 32768);
-console.log('waveform1 ->',waveform1.length)
-var spectrum = ft(waveform1);
-//console.log('spectrum ->', spectrum);
-
-
-    const x = ndarray(lowRange);
-    const y = ndarray(upRange);
-
-    // fft(1, x, y);
-    // x.data.slice(0, x.data.length / 2).forEach((value, index) => {
-    //     frequencies.push({
-    //     magnitude: spectrum,///*value,*/math.sqrt(value*value + y.data[index]),
-    //     phase: /*y.data[index]*/math.atan2(y.data[index], value)
-    //   });
-    // });
-  return spectrum;
+  const wave = lowRange.slice(0, index);
+  const spectrum = fjs.Transform.toSpectrum(wave, { method: 'fft'} );
+  return { wave: _.values(wave), spectrum };
 }
 
-module.exports = aydioFft;
+module.exports = { aydioFft, getEnergy, getWave };
