@@ -44,10 +44,13 @@ const enhance = compose (
     componentDidMount() {
       const { data1,  data2 } = this.props;
       socket.on('record-data', data => {
+
         zingchart.exec('chart', 'appendseriesvalues', {
           plotindex : 0,
           values : data || [],
         });
+
+
       });
 
       zingchart.render({
