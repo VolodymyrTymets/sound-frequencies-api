@@ -1,12 +1,12 @@
 import React from 'react';
 import Panel from '../containers/Panel';
-import Chart from '../containers/Chart';
+import RecordChart from '../containers/RecordChart';
 
 const Home = () =>
   <div className="container-fluid">
     <div className="col-lg-12">
       <Panel/>
-      <Chart/>
+      <RecordChart />
     </div>
   </div>;
 

@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
-    "chart.js": "^1.1.1",
+    "canvasjs": "^1.8.1",
     "font-awesome": "^4.7.0",
     "normalizr": "^3.2.3",
     "react": "^15.6.1",

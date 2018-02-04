@@ -24,6 +24,9 @@
     "npm": "^5.4.2",
     "serve-favicon": "~2.4.2",
     "socket.io": "^2.0.3",
-    "wav-decoder": "^1.1.1"
+    "wav-decoder": "^1.1.1",
+    "fourier-transform": "^1.1.2",
+    "throttle-debounce": "^1.0.1",
+    "waveheader": "0.0.2"
   }
 }
